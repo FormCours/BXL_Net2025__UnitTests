@@ -12,9 +12,33 @@
             throw new NotImplementedException();
         }
 
-        public static int GetAge(DateTime birthDate)
+        public DateProvider _dateProvider = new DateProvider();
+
+        public int GetAge(DateTime birthDate)
         {
-            throw new NotImplementedException();
+            var today = _dateProvider.GetDate();
+            if(birthDate > today)
+            {
+                throw new ArgumentException();
+            }
+            int age = today.Year - birthDate.Year;
+            if(today.Month < birthDate.Month)
+            {
+                age -= 1;
+            }
+            else if(today.Month == birthDate.Month && today.Day < birthDate.Day)
+            {
+                age -= 1;
+            }
+            return age;
+        }
+    }
+
+    public class DateProvider
+    {
+        public virtual DateTime GetDate()
+        {
+            return DateTime.UtcNow;
         }
     }
 }
