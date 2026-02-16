@@ -57,5 +57,16 @@ namespace DemoUnitTests.Tests.API.Utils
             });
             
         }
+
+        //[Theory]
+        //[InlineData("2000:01:01T12:00", "2000:01:01T12:00", "2000:01:01T12:00", "2000:01:01T12:00")]
+        //[InlineData("2000:01:01T12:00", "2000:01:01T12:00", "2000:01:01T12:00", "2000:01:01T12:00")]
+        //public void Test(string s1, string s2, string e1, string e2)
+        //{
+        //    DateTime d1 = DateTime.Parse(s1);
+        //    DateTime d2 = DateTime.Parse(s2);
+        //    DateTime d3 = DateTime.Parse(e1);
+        //    DateTime d4 = DateTime.Parse(e2);
+        //}
     }
 }

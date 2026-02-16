@@ -11,5 +11,10 @@
             // false
             throw new NotImplementedException();
         }
+
+        public static int GetAge(DateTime birthDate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

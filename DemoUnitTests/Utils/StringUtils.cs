@@ -4,10 +4,13 @@
     {
         public static string ToTitle(string value)
         {
-            // je m'appelle Khun
-            // Je M'appelle Khun
-            // mon application => Mon Application
-            throw new NotImplementedException();
+            var words = value.Trim().Split(" ");
+            words = words
+                .Where(w => !string.IsNullOrWhiteSpace(w))
+                .Select(w => w[0..1].ToUpper() + w[1..].ToLower())
+                .ToArray();
+
+            return string.Join(" ", words);
         }
     }
 }
