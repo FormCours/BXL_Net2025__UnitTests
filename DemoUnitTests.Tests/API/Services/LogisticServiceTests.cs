@@ -119,6 +119,7 @@ namespace DemoUnitTests.Tests.API.Services
             // → L'order 42 obtenir via le stubOrderService, contient 3 produits !
         }
 
+        // Exemple de tests avec exceptions
         [Fact]
         public void PrepareOrder_OneProductIsNotFound_ThrowsInvalidDataException()
         {
@@ -140,6 +141,30 @@ namespace DemoUnitTests.Tests.API.Services
 
             // Assert + Act
             var error = Assert.Throws<InvalidDataException>(() => {
+                logisticService.PrepareOrder(orderId);
+            });
+            Assert.Equal(expected_error_msg, error.Message);
+        }
+
+        [Fact]
+        public void PrepareOrder_OrderIsNotFound_ThrowsArgumentOutOfRangeException()
+        {
+            int orderId = 5;
+            string expected_error_msg = "La commande n'a pas été trouvé !";
+
+            // Mocking
+            // -> Fake de "IOrderService" avec un order not found en exception
+            Mock<IOrderService> stubOrderService = new Mock<IOrderService>();
+            stubOrderService.Setup(service => service.GetById(orderId)).Throws<ArgumentException>();
+            // -> Fake de "IStockService" sans config (en a juste besoin pour le ctor)
+            Mock<IStockService> stubStockService = new Mock<IStockService>();
+
+            // Arrange
+            ILogisticService logisticService = new LogisticService(stubOrderService.Object, stubStockService.Object);
+
+            //Act and Assert
+            var error = Assert.Throws<ArgumentOutOfRangeException>(() =>
+            {
                 logisticService.PrepareOrder(orderId);
             });
             Assert.Equal(expected_error_msg, error.Message);

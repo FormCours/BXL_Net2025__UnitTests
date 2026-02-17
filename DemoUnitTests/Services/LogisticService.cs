@@ -17,7 +17,16 @@ namespace DemoUnitTests.API.Services
 
         public bool PrepareOrder(int orderId)
         {
-            Order order = _orderService.GetById(orderId);
+            Order order;
+
+            try
+            {
+                order = _orderService.GetById(orderId);
+            }
+            catch (ArgumentException error)
+            {
+                throw new ArgumentOutOfRangeException("La commande n'a pas été trouvé !",error);
+            }
 
             try
             {
