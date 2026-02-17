@@ -19,14 +19,22 @@ namespace DemoUnitTests.API.Services
         {
             Order order = _orderService.GetById(orderId);
 
-            for(int p=0; p < order.Lines.Count(); p++)
+            try
             {
-                Order.OrderLine line = order.Lines[p];
-                int stock = _stockService.GetStock(line.ProductId);
-                if(line.Quantity > stock)
+                for (int p = 0; p < order.Lines.Count(); p++)
                 {
-                    return false;
+                    Order.OrderLine line = order.Lines[p];
+                    int stock = _stockService.GetStock(line.ProductId);
+
+                    if (line.Quantity > stock)
+                    {
+                        return false;
+                    }
                 }
+            }
+            catch (ArgumentException)
+            {
+                throw new InvalidDataException("Un produit n'a pas été trouvé dans le stock !");
             }
 
             return true;

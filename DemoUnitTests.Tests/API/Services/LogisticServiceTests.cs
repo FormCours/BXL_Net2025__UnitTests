@@ -119,6 +119,30 @@ namespace DemoUnitTests.Tests.API.Services
             // → L'order 42 obtenir via le stubOrderService, contient 3 produits !
         }
 
+        [Fact]
+        public void PrepareOrder_OneProductIsNotFound_ThrowsInvalidDataException()
+        {
+            int orderId = 42;
+            int productIdNotFound = 3;
+            int productQuantity = 1_000;
+            string expected_error_msg = "Un produit n'a pas été trouvé dans le stock !";
 
+            // Mocking
+            IOrderService stubOrderService = new FakeOrderService();
+
+            Mock<IStockService> mockStockService = new Mock<IStockService>();
+            mockStockService.Setup(service => service.GetStock(It.IsNotIn<int>(productIdNotFound))).Returns(productQuantity);
+            mockStockService.Setup(service => service.GetStock(productIdNotFound)).Throws<ArgumentException>();
+            // → Le produit 3 n'existe pas dans la "db" du stock
+
+            // Arrange
+            ILogisticService logisticService = new LogisticService(stubOrderService, mockStockService.Object);
+
+            // Assert + Act
+            var error = Assert.Throws<InvalidDataException>(() => {
+                logisticService.PrepareOrder(orderId);
+            });
+            Assert.Equal(expected_error_msg, error.Message);
+        }
     }
 }
