@@ -14,19 +14,21 @@ namespace DemoUnitTests.API.Services
             _stockService = stockService;
         }
 
-
-        public bool PrepareOrder(int orderId)
+        private Order GetOrderFromService(int orderId)
         {
-            Order order;
-
             try
             {
-                order = _orderService.GetById(orderId);
+                return _orderService.GetById(orderId);
             }
             catch (ArgumentException error)
             {
-                throw new ArgumentOutOfRangeException("La commande n'a pas été trouvé !",error);
+                throw new ArgumentOutOfRangeException("La commande n'a pas été trouvé !", error);
             }
+        }
+
+        public bool PrepareOrder(int orderId)
+        {
+            Order order = GetOrderFromService(orderId);
 
             try
             {

@@ -131,13 +131,13 @@ namespace DemoUnitTests.Tests.API.Services
             // Mocking
             IOrderService stubOrderService = new FakeOrderService();
 
-            Mock<IStockService> mockStockService = new Mock<IStockService>();
-            mockStockService.Setup(service => service.GetStock(It.IsNotIn<int>(productIdNotFound))).Returns(productQuantity);
-            mockStockService.Setup(service => service.GetStock(productIdNotFound)).Throws<ArgumentException>();
+            Mock<IStockService> stubStockService = new Mock<IStockService>();
+            stubStockService.Setup(service => service.GetStock(It.IsNotIn<int>(productIdNotFound))).Returns(productQuantity);
+            stubStockService.Setup(service => service.GetStock(productIdNotFound)).Throws<ArgumentException>();
             // → Le produit 3 n'existe pas dans la "db" du stock
 
             // Arrange
-            ILogisticService logisticService = new LogisticService(stubOrderService, mockStockService.Object);
+            ILogisticService logisticService = new LogisticService(stubOrderService, stubStockService.Object);
 
             // Assert + Act
             var error = Assert.Throws<InvalidDataException>(() => {
