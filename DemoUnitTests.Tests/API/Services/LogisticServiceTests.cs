@@ -42,6 +42,19 @@ namespace DemoUnitTests.Tests.API.Services
             throw new NotImplementedException();
         }
     }
+
+    internal class FakeStockService_OnlyOneProductInStock : IStockService
+    {
+        public int GetStock(int productId)
+        {
+            return (productId == 1) ? 100 : 0;
+        }
+
+        public void RemoveStock(int productId, int quantity)
+        {
+            throw new NotImplementedException();
+        }
+    }
     #endregion
 
     public class LogisticServiceTests
@@ -63,6 +76,24 @@ namespace DemoUnitTests.Tests.API.Services
 
             //Assert
             Assert.True(result);
+        }
+
+        [Fact]
+        public void PrepareOrder_ProductOrderedNotInStock_ReturnFalse()
+        {
+            // Simulation des dépendences
+            IOrderService stubOrderService = new FakeOrderService();
+            IStockService stubStockService = new FakeStockService_OnlyOneProductInStock();
+
+            // Arrange
+            ILogisticService logisticService = new LogisticService(stubOrderService, stubStockService);
+            int orderId = 42;
+
+            // Act
+            bool result = logisticService.PrepareOrder(orderId);
+
+            //Assert
+            Assert.False(result);
         }
 
     }
