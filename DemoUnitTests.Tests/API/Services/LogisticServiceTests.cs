@@ -1,6 +1,7 @@
 ﻿using DemoUnitTests.API.Interfaces;
 using DemoUnitTests.API.Models;
 using DemoUnitTests.API.Services;
+using Moq;
 
 namespace DemoUnitTests.Tests.API.Services
 {
@@ -94,6 +95,28 @@ namespace DemoUnitTests.Tests.API.Services
 
             //Assert
             Assert.False(result);
+        }
+
+
+        // Exemple avec des dépendences simulée via le package « Moq »
+        [Fact]
+        public void PrepareOrder_ProductOrderedInStock_AllProductStockIsChecked()
+        {
+            // Mocking
+            IOrderService stubOrderService = new FakeOrderService();
+            Mock<IStockService> mockStockService = new Mock<IStockService>();
+            mockStockService.Setup(service => service.GetStock(It.IsAny<int>())).Returns(1_000);
+            // → It.IsAny<int>() : N'import quelle entier
+
+            // Arrange
+            ILogisticService logisticService = new LogisticService(stubOrderService, mockStockService.Object);
+
+            // Act
+            logisticService.PrepareOrder(42);
+
+            // Assert
+            mockStockService.Verify(service => service.GetStock(It.IsAny<int>()), Times.Exactly(3));
+            // → L'order 42 obtenir via le stubOrderService, contient 3 produits !
         }
 
     }
