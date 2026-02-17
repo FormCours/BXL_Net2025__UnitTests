@@ -15,7 +15,7 @@ namespace DemoUnitTests.Tests.API.Services
 
         public Order GetById(int orderId)
         {
-            if (orderId != 42) 
+            if (orderId != 42)
                 throw new ArgumentException("Bad Order !");
 
             return new Order()
@@ -118,6 +118,7 @@ namespace DemoUnitTests.Tests.API.Services
             mockStockService.Verify(service => service.GetStock(It.IsAny<int>()), Times.Exactly(3));
             // → L'order 42 obtenir via le stubOrderService, contient 3 produits !
         }
+
 
     }
 }

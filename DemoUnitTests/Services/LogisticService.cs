@@ -1,4 +1,5 @@
 ﻿using DemoUnitTests.API.Interfaces;
+using DemoUnitTests.API.Models;
 
 namespace DemoUnitTests.API.Services
 {
@@ -16,7 +17,19 @@ namespace DemoUnitTests.API.Services
 
         public bool PrepareOrder(int orderId)
         {
-            throw new NotImplementedException();
+            Order order = _orderService.GetById(orderId);
+
+            for(int p=0; p < order.Lines.Count(); p++)
+            {
+                Order.OrderLine line = order.Lines[p];
+                int stock = _stockService.GetStock(line.ProductId);
+                if(line.Quantity > stock)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public bool ValideOrder(int orderId)
